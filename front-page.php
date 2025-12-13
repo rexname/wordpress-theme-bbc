@@ -114,36 +114,60 @@
   </section>
 
   <?php
+  $also_cat_id = 0;
+  $also_cat_name = '';
+  $maybe_news = get_category_by_slug('news');
+  if ($maybe_news) { $also_cat_id = (int) $maybe_news->term_id; $also_cat_name = $maybe_news->name; }
+  if (!$also_cat_id) {
+    $tops = get_categories(['parent'=>0,'hide_empty'=>false,'orderby'=>'count','order'=>'DESC']);
+    if (!empty($tops)) { $also_cat_id = (int) $tops[0]->term_id; $also_cat_name = $tops[0]->name; }
+  }
+  if (!$also_cat_id) {
+    $probe = new WP_Query(['posts_per_page'=>1,'ignore_sticky_posts'=>true]);
+    if ($probe->have_posts()) { $probe->the_post(); $cats = get_the_category(); if ($cats) { $also_cat_id = (int) $cats[0]->term_id; $also_cat_name = $cats[0]->name; } }
+    wp_reset_postdata();
+  }
+
   $also_main = new WP_Query([
+    'cat' => $also_cat_id,
     'posts_per_page' => 1,
-    'offset' => 15,
     'ignore_sticky_posts' => true,
   ]);
   $also_media = new WP_Query([
+    'cat' => $also_cat_id,
     'posts_per_page' => 3,
-    'offset' => 16,
+    'offset' => 1,
     'ignore_sticky_posts' => true,
   ]);
   $also_right = new WP_Query([
+    'cat' => $also_cat_id,
     'posts_per_page' => 3,
-    'offset' => 19,
+    'offset' => 4,
     'ignore_sticky_posts' => true,
   ]);
   $also_cards = new WP_Query([
-    'posts_per_page' => 3,
-    'offset' => 22,
+    'cat' => $also_cat_id,
+    'posts_per_page' => 5,
+    'offset' => 7,
     'ignore_sticky_posts' => true,
   ]);
   ?>
   <section class="also">
-    <h2 class="sub-title">ALSO IN NEWS</h2>
+    <h2 class="sub-title">ALSO IN <?php echo esc_html($also_cat_name ?: 'NEWS'); ?></h2>
     <div class="also-grid">
       <div class="also-left">
         <?php if ($also_main->have_posts()) : $also_main->the_post(); ?>
-          <h3 class="also-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-          <p class="also-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 28)); ?></p>
-          <div class="also-meta">
-            <?php $ago = human_time_diff(get_the_time('U'), current_time('timestamp')); echo esc_html($ago).' ago'; ?>
+          <div class="also-lead">
+            <div class="also-lead-media">
+              <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-lg'); } ?>
+            </div>
+            <div class="also-lead-text">
+              <h3 class="also-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+              <p class="also-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 30)); ?></p>
+              <div class="also-meta">
+                <?php $ago = human_time_diff(get_the_time('U'), current_time('timestamp')); echo esc_html($ago).' ago'; ?>
+              </div>
+            </div>
           </div>
         <?php wp_reset_postdata(); endif; ?>
       </div>
@@ -172,20 +196,19 @@
 
     <div class="also-lower">
       <?php if ($also_cards->have_posts()) : while ($also_cards->have_posts()) : $also_cards->the_post(); ?>
-        <div class="also-card">
+        <article class="also-card v">
           <a class="thumb" href="<?php the_permalink(); ?>">
             <?php if (has_post_thumbnail()) { the_post_thumbnail('card-sm'); } ?>
           </a>
-          <div>
-            <h4 class="title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
-            <p class="excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 18)); ?></p>
-            <div class="meta">
-              <?php $ago = human_time_diff(get_the_time('U'), current_time('timestamp')); echo esc_html($ago).' ago'; ?>
-            </div>
+          <h4 class="title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
+          <p class="excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 22)); ?></p>
+          <div class="meta">
+            <?php $ago = human_time_diff(get_the_time('U'), current_time('timestamp')); echo esc_html($ago).' ago'; ?>
           </div>
-        </div>
+        </article>
       <?php endwhile; wp_reset_postdata(); endif; ?>
     </div>
+    <div class="also-more"><a href="<?php echo esc_url(get_category_link($also_cat_id)); ?>">More</a></div>
   </section>
 </main>
 <?php get_footer(); ?>

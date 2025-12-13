@@ -9,13 +9,24 @@ Tested up to: 6.5
 Text Domain: bbc
 */
 
-:root{--accent:#bb1919;--text:#000;--muted:#666;--border:#e5e5e5}
+:root{--accent:#bb1919;--text:#000;--muted:#666;--border:#e5e5e5;--brandbar-h:60px}
 html{box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Helvetica Neue",Helvetica,sans-serif;color:#000;background:#fff}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Helvetica Neue",Helvetica,sans-serif;color:#000;background:#fff;padding-top:var(--brandbar-h)}
+
+a{color:#000;text-decoration:none}
+a:visited{color:#000}
+a:hover{text-decoration:underline}
 
 .site-header{border-bottom:1px solid var(--border)}
-.site-header__inner{max-width:1100px;margin:0 auto;padding:16px 16px 0;text-align:center}
+.site-header__inner{max-width:1100px;margin:0 auto;padding:12px 16px;text-align:center}
+.site-brandbar .site-header__inner{height:var(--brandbar-h);padding:0 16px;display:flex;align-items:center;justify-content:center}
+.site-brand{margin-bottom:0}
+.site-brandbar{border-bottom:1px solid var(--border)}
+
+.site-brandbar{position:fixed;top:0;left:0;right:0;z-index:20;background:#fff}
+.site-navbar{position:sticky;top:var(--brandbar-h);z-index:30;background:#fff;transition:transform .25s ease, opacity .25s ease}
+.site-navbar.hide{transform:translateY(-100%);opacity:0}
 
 .site-brand{display:inline-flex;justify-content:center;align-items:center;gap:6px;text-decoration:none;margin-bottom:8px;line-height:1}
 .site-brand .brand-box{min-width:36px;height:36px;background:#000;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;padding:0 10px;letter-spacing:0;white-space:nowrap}
@@ -37,7 +48,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Helve
 .entry-title{font-size:2rem;margin:0 0 1rem}
 .entry-content{line-height:1.6}
 
-.home-hero{display:grid;grid-template-columns:2fr 1.4fr .8fr;gap:24px;margin-top:8px;align-items:start}
+.home-hero{display:grid;grid-template-columns:1.6fr 1.2fr 1fr;gap:20px;margin-top:8px;align-items:start}
 .hero-left{display:block}
 .hero-center{display:block}
 .hero-right{display:block}
@@ -45,14 +56,15 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Helve
 .hero-title{font-size:2rem;font-weight:700;margin:0}
 .hero-excerpt{color:var(--muted);margin:0}
 .hero-meta{color:var(--muted);font-size:.9rem}
-.hero-image img{width:100%;height:auto;display:block}
+.hero-image{aspect-ratio:16/9;width:100%;overflow:hidden}
+.hero-image img{width:100%;height:100%;display:block;object-fit:cover}
 
 .hero-side{display:grid;grid-template-rows:auto auto;gap:16px}
 .side-item{display:grid;grid-template-columns:120px 1fr;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .side-thumb img{width:100%;height:auto;display:block}
 .side-text{display:flex;flex-direction:column;gap:6px}
 .side-title{font-size:1rem;margin:0}
-.side-excerpt{color:var(--muted);margin:0}
+.side-excerpt{display:none}
 .side-meta{color:var(--muted);font-size:.85rem}
 
 .cards-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin:24px 0}
@@ -73,8 +85,12 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Helve
 .link-title{font-size:1rem;margin:0}
 
 .sub-title{font-size:.95rem;color:#000;border-top:1px solid var(--border);padding-top:10px;margin:0 0 14px;letter-spacing:.3px}
-.also-grid{display:grid;grid-template-columns:1.4fr 1.4fr 1fr;gap:20px}
+.also-grid{display:grid;grid-template-columns:1.6fr 1.4fr 1fr;gap:20px}
 .also-left{display:flex;flex-direction:column;gap:8px}
+.also-lead{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:start}
+.also-lead-media{aspect-ratio:16/9;width:100%;overflow:hidden}
+.also-lead-media img{width:100%;height:100%;object-fit:cover;display:block}
+.also-lead-text{display:flex;flex-direction:column;gap:8px}
 .also-title{font-size:1.6rem;font-weight:800;margin:0}
 .also-excerpt{color:var(--muted);margin:0}
 .also-meta{color:var(--muted);font-size:.9rem}
@@ -85,10 +101,18 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Helve
 .play::before{content:"";position:absolute;top:50%;left:50%;transform:translate(-40%,-50%);border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent #fff}
 .also-right{display:flex;flex-direction:column;gap:18px}
 .also-item-title{font-size:1rem;margin:0}
-.also-item-excerpt{color:var(--muted);margin:6px 0 0;font-size:.95rem}
+.also-item-excerpt{color:var(--muted);margin:6px 0 0;font-size:.9rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .also-item-meta{color:var(--muted);font-size:.85rem;margin-top:4px}
-.also-lower{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:18px}
+.also-lower{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;margin-top:18px}
+.also-more{text-align:right;margin-top:12px}
+.also-more a{font-weight:600}
 .also-card{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:start}
+.also-card.v{display:flex;flex-direction:column}
+.also-card.v .thumb{width:100%}
+.also-card.v .thumb img{width:100%;display:block}
+.also-card.v .title{font-size:1rem;margin:8px 0 0}
+.also-card.v .excerpt{color:var(--muted);margin:6px 0 0;font-size:.95rem;line-height:1.6}
+.also-card.v .meta{color:var(--muted);font-size:.85rem;margin-top:4px}
 .also-card .thumb img{width:100%;display:block}
 .also-card .title{font-size:1rem;margin:0}
 .also-card .excerpt{color:var(--muted);margin:6px 0 0;font-size:.95rem}
@@ -106,3 +130,6 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Helve
   .home-links .links-row{grid-template-columns:repeat(2,1fr)}
   .also-lower{grid-template-columns:1fr}
 }
+.site-footer{border-top:1px solid var(--border);margin-top:32px;background:#fff}
+.site-footer__inner{max-width:1100px;margin:0 auto;padding:24px 16px;text-align:center;color:var(--muted);font-size:.9rem}
+.site-footer__inner a{color:#000}
