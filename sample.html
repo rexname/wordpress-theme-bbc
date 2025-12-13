@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sample News Layout</title>
+  <style>
+    :root{--accent:#bb1919;--text:#111;--muted:#595959;--border:#e5e5e5;--bg:#fff;--surface:#fff;--radius:10px;--shadow:0 6px 18px rgba(0,0,0,.08)}
+    html{box-sizing:border-box}
+    *,*::before,*::after{box-sizing:inherit}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
+
+    a{color:inherit;text-decoration:none}
+    a:hover{color:var(--accent)}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+    .site-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:saturate(160%) blur(6px);border-bottom:1px solid var(--border)}
+    .site-header__inner{max-width:1100px;margin:0 auto;padding:16px 16px 0;text-align:center}
+    .site-brand{display:inline-flex;justify-content:center;align-items:center;gap:8px;text-decoration:none;margin-bottom:10px;line-height:1}
+    .site-brand .brand-box{min-width:40px;height:40px;background:#000;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;padding:0 12px;border-radius:8px;box-shadow:var(--shadow)}
+    .site-brand img{max-height:40px;width:auto;display:block}
+
+    .primary-nav{border-top:1px solid var(--border)}
+    .primary-menu{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:10px 0;margin:0}
+    .primary-menu li a{display:inline-block;padding:6px 2px;font-weight:600;transition:color .2s ease, border-color .2s ease}
+    .primary-menu li.current a,.primary-menu li a:hover{border-bottom:2px solid var(--accent)}
+
+    .secondary-nav{border-top:1px solid var(--border)}
+    .secondary-menu{list-style:none;display:flex;flex-wrap:nowrap;overflow-x:auto;justify-content:center;gap:14px;padding:8px 0;margin:0;font-size:12px;white-space:nowrap}
+    .secondary-menu li a{padding:4px 0}
+    .secondary-menu li.current a,.secondary-menu li a:hover{border-bottom:2px solid var(--accent)}
+
+    .site-main{max-width:1100px;margin:28px auto;padding:0 16px}
+    .section-title{margin:0 0 14px;text-align:center;color:var(--accent);font-weight:800;letter-spacing:.6px}
+
+    .home-hero{display:grid;grid-template-columns:2fr 1.3fr 1fr;gap:26px;margin-top:10px;align-items:start}
+    .hero-left,.hero-center,.hero-right{display:block}
+    .hero-title{font-size:clamp(1.6rem,2.4vw,2.4rem);font-weight:800;margin:0}
+    .hero-excerpt{color:var(--muted);margin:8px 0 0}
+    .hero-meta{color:var(--muted);font-size:.92rem;margin-top:8px}
+    .hero-image img{width:100%;height:auto;display:block;border-radius:var(--radius);box-shadow:var(--shadow);aspect-ratio:9/5;object-fit:cover;transition:transform .3s ease}
+    .hero-image img:hover{transform:scale(1.02)}
+
+    .hero-right .side-item{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);transition:background .2s ease}
+    .hero-right .side-item:hover{background:#fafafa}
+    .side-thumb img{width:100%;height:auto;display:block;border-radius:8px;aspect-ratio:7/4;object-fit:cover}
+    .side-text{display:flex;flex-direction:column;gap:6px}
+    .side-title{font-size:1rem;margin:0}
+    .side-excerpt{color:var(--muted);margin:0}
+    .side-meta{color:var(--muted);font-size:.85rem}
+
+    .home-teasers .teasers-row{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin:26px 0}
+    .teaser{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;transition:transform .2s ease, box-shadow .2s ease}
+    .teaser:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+    .teaser-thumb img{width:100%;height:auto;display:block;border-radius:8px;aspect-ratio:3/2;object-fit:cover}
+    .teaser-title{font-size:.98rem;margin:0}
+    .teaser-excerpt{color:var(--muted);font-size:.9rem;margin:0}
+    .teaser-meta{color:var(--muted);font-size:.8rem}
+
+    .home-links .links-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:10px 0 26px}
+    .link-item{padding-top:10px;border-top:1px solid var(--border)}
+    .link-title{font-size:1rem;margin:0}
+    .link-title a{transition:color .2s ease}
+    .link-title a:hover{color:var(--accent)}
+
+    .also{margin-top:28px}
+    .sub-title{font-size:.95rem;color:#000;border-top:1px solid var(--border);padding-top:10px;margin:0 0 14px;letter-spacing:.3px}
+    .also-grid{display:grid;grid-template-columns:1.4fr 1.4fr 1fr;gap:20px}
+    .also-left{display:flex;flex-direction:column;gap:8px}
+    .also-title{font-size:1.6rem;font-weight:800;margin:0}
+    .also-excerpt{color:var(--muted);margin:0}
+    .also-meta{color:var(--muted);font-size:.9rem}
+    .also-center{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start}
+    .also-media{position:relative}
+    .also-media img{width:100%;display:block;border-radius:8px;aspect-ratio:4/3;object-fit:cover}
+    .play{position:absolute;bottom:10px;left:10px;width:26px;height:20px;background:rgba(0,0,0,.6);border-radius:6px}
+    .play::before{content:"";position:absolute;top:50%;left:50%;transform:translate(-40%,-50%);border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent #fff}
+    .also-right{display:flex;flex-direction:column;gap:18px}
+    .also-item-title{font-size:1rem;margin:0}
+    .also-item-excerpt{color:var(--muted);margin:6px 0 0;font-size:.95rem}
+    .also-item-meta{color:var(--muted);font-size:.85rem;margin-top:4px}
+    .also-lower{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:18px}
+    .also-card{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:start}
+    .also-card .thumb img{width:100%;display:block;border-radius:8px;aspect-ratio:4/3;object-fit:cover}
+    .also-card .title{font-size:1rem;margin:0}
+    .also-card .excerpt{color:var(--muted);margin:6px 0 0;font-size:.95rem}
+    .also-card .meta{color:var(--muted);font-size:.85rem;margin-top:4px}
+
+    @media (max-width:960px){
+      .home-hero{grid-template-columns:1fr}
+      .home-teasers .teasers-row{grid-template-columns:repeat(3,1fr)}
+    }
+    @media (max-width:640px){
+      .home-teasers .teasers-row{grid-template-columns:repeat(2,1fr)}
+      .home-links .links-row{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="site-brand" href="#"><span class="brand-box">SITE</span></a>
+      <nav class="primary-nav"><ul class="primary-menu">
+        <li class="current"><a href="#">News</a></li>
+        <li><a href="#">Sport</a></li>
+        <li><a href="#">Business</a></li>
+        <li><a href="#">Innovation</a></li>
+        <li><a href="#">Culture</a></li>
+        <li><a href="#">Arts</a></li>
+        <li><a href="#">Travel</a></li>
+        <li><a href="#">Earth</a></li>
+        <li><a href="#">Audio</a></li>
+        <li><a href="#">Video</a></li>
+        <li><a href="#">Live</a></li>
+      </ul></nav>
+      <nav class="secondary-nav"><ul class="secondary-menu">
+        <li class="current"><a href="#">Asia</a></li>
+        <li><a href="#">Africa</a></li>
+        <li><a href="#">Europe</a></li>
+        <li><a href="#">US & Canada</a></li>
+        <li><a href="#">Latin America</a></li>
+        <li><a href="#">Middle East</a></li>
+        <li><a href="#">In Pictures</a></li>
+      </ul></nav>
+    </div>
+  </header>
+
+  <main class="site-main" role="main">
+    <h1 class="section-title">NEWS</h1>
+
+    <section class="home-hero">
+      <div class="hero-left">
+        <article class="hero-lead">
+          <h2 class="hero-title">Lorem ipsum dolor sit amet</h2>
+          <p class="hero-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam vitae lorem.</p>
+          <div class="hero-meta">3 hrs ago • Lorem</div>
+        </article>
+      </div>
+      <div class="hero-center">
+        <figure class="hero-image"><img src="https://via.placeholder.com/900x500/e74c3c/ffffff" alt=""></figure>
+      </div>
+      <aside class="hero-right">
+        <article class="side-item">
+          <a class="side-thumb" href="#"><img src="https://via.placeholder.com/420x240/1abc9c/ffffff" alt=""></a>
+          <div class="side-text">
+            <h3 class="side-title"><a href="#">Lorem ipsum dolor sit amet</a></h3>
+            <p class="side-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <div class="side-meta">8 hrs ago • Lorem</div>
+          </div>
+        </article>
+        <article class="side-item">
+          <a class="side-thumb" href="#"><img src="https://via.placeholder.com/420x240/9b59b6/ffffff" alt=""></a>
+          <div class="side-text">
+            <h3 class="side-title"><a href="#">Consectetur adipiscing elit sed do</a></h3>
+            <p class="side-excerpt">Sed do eiusmod tempor incididunt ut labore et dolore.</p>
+            <div class="side-meta">58 mins ago • Lorem</div>
+          </div>
+        </article>
+      </aside>
+    </section>
+
+    <section class="home-teasers">
+      <div class="teasers-row">
+        <article class="teaser">
+          <a class="teaser-thumb" href="#"><img src="https://via.placeholder.com/180x120/f39c12/ffffff" alt=""></a>
+          <h3 class="teaser-title"><a href="#">Lorem ipsum dolor sit amet</a></h3>
+          <p class="teaser-excerpt">Lorem ipsum dolor sit amet.</p>
+          <div class="teaser-meta">8 hrs ago • Lorem</div>
+        </article>
+        <article class="teaser">
+          <a class="teaser-thumb" href="#"><img src="https://via.placeholder.com/180x120/2ecc71/ffffff" alt=""></a>
+          <h3 class="teaser-title"><a href="#">Consectetur adipiscing elit</a></h3>
+          <p class="teaser-excerpt">Consectetur adipiscing elit.</p>
+          <div class="teaser-meta">6 hrs ago • Lorem</div>
+        </article>
+        <article class="teaser">
+          <a class="teaser-thumb" href="#"><img src="https://via.placeholder.com/180x120/3498db/ffffff" alt=""></a>
+          <h3 class="teaser-title"><a href="#">Sed do eiusmod tempor</a></h3>
+          <p class="teaser-excerpt">Sed do eiusmod tempor.</p>
+          <div class="teaser-meta">8 hrs ago • Lorem</div>
+        </article>
+        <article class="teaser">
+          <a class="teaser-thumb" href="#"><img src="https://via.placeholder.com/180x120/e67e22/ffffff" alt=""></a>
+          <h3 class="teaser-title"><a href="#">Incididunt ut labore</a></h3>
+          <p class="teaser-excerpt">Incididunt ut labore et dolore.</p>
+          <div class="teaser-meta">3 hrs ago • Lorem</div>
+        </article>
+        <article class="teaser">
+          <a class="teaser-thumb" href="#"><img src="https://via.placeholder.com/180x120/95a5a6/ffffff" alt=""></a>
+          <h3 class="teaser-title"><a href="#">Magna aliqua</a></h3>
+          <p class="teaser-excerpt">Magna aliqua.</p>
+          <div class="teaser-meta">8 hrs ago • Lorem</div>
+        </article>
+        <article class="teaser">
+          <a class="teaser-thumb" href="#"><img src="https://via.placeholder.com/180x120/d35400/ffffff" alt=""></a>
+          <h3 class="teaser-title"><a href="#">Ut enim ad minim veniam</a></h3>
+          <p class="teaser-excerpt">Ut enim ad minim veniam.</p>
+          <div class="teaser-meta">58 mins ago • Lorem</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-links">
+      <div class="links-row">
+        <article class="link-item"><h3 class="link-title"><a href="#">Lorem ipsum dolor sit amet</a></h3></article>
+        <article class="link-item"><h3 class="link-title"><a href="#">Consectetur adipiscing elit</a></h3></article>
+        <article class="link-item"><h3 class="link-title"><a href="#">Sed do eiusmod tempor</a></h3></article>
+        <article class="link-item"><h3 class="link-title"><a href="#">Incididunt ut labore</a></h3></article>
+        <article class="link-item"><h3 class="link-title"><a href="#">Et dolore magna aliqua</a></h3></article>
+        <article class="link-item"><h3 class="link-title"><a href="#">Ut enim ad minim veniam</a></h3></article>
+      </div>
+    </section>
+
+    <section class="also">
+      <h2 class="sub-title">ALSO IN NEWS</h2>
+      <div class="also-grid">
+        <div class="also-left">
+          <h3 class="also-title">Interpreter in tears as boy recalls losing mother</h3>
+          <p class="also-excerpt">Lorem ipsum dolor sit amet, was injured in a strike on a hospital that also killed his mother.</p>
+          <div class="also-meta">13 hrs ago • Europe</div>
+        </div>
+        <div class="also-center">
+          <div class="also-media">
+            <img src="https://via.placeholder.com/420x300/1f8ef1/ffffff" alt="">
+            <span class="play"></span>
+          </div>
+          <div class="also-media">
+            <img src="https://via.placeholder.com/420x300/34495e/ffffff" alt="">
+            <span class="play"></span>
+          </div>
+          <div class="also-media">
+            <img src="https://via.placeholder.com/420x300/f39c12/ffffff" alt="">
+          </div>
+        </div>
+        <aside class="also-right">
+          <article class="also-item">
+            <h4 class="also-item-title"><a href="#">Crypto fraudster sentenced for epic crash</a></h4>
+            <p class="also-item-excerpt">In August, lorem pleaded guilty to conspiracy to defraud and wire fraud.</p>
+            <div class="also-item-meta">8 hrs ago • Business</div>
+          </article>
+          <article class="also-item">
+            <h4 class="also-item-title"><a href="#">Release from immigration detention after order</a></h4>
+            <p class="also-item-excerpt">A judge ruled the government did not have legal authority to continue detaining.</p>
+            <div class="also-item-meta">9 hrs ago • World</div>
+          </article>
+          <article class="also-item">
+            <h4 class="also-item-title"><a href="#">OpenAI makes deal to bring characters</a></h4>
+            <p class="also-item-excerpt">Agreement lets fans generate videos and images of more than 200 characters.</p>
+            <div class="also-item-meta">14 hrs ago • Technology</div>
+          </article>
+        </aside>
+      </div>
+
+      <div class="also-lower">
+        <div class="also-card">
+          <a class="thumb" href="#"><img src="https://via.placeholder.com/300x220/2ecc71/ffffff" alt=""></a>
+          <div>
+            <h4 class="title"><a href="#">Famous crocodile wrangler jailed</a></h4>
+            <p class="excerpt">Former star found guilty over investigation.</p>
+            <div class="meta">58 mins ago • Australia</div>
+          </div>
+        </div>
+        <div class="also-card">
+          <a class="thumb" href="#"><img src="https://via.placeholder.com/300x220/e74c3c/ffffff" alt=""></a>
+          <div>
+            <h4 class="title"><a href="#">Architects of AI named Person of the Year</a></h4>
+            <p class="excerpt">Influential tech figures adorn the cover.</p>
+            <div class="meta">19 hrs ago • Technology</div>
+          </div>
+        </div>
+        <div class="also-card">
+          <a class="thumb" href="#"><img src="https://via.placeholder.com/300x220/16a085/ffffff" alt=""></a>
+          <div>
+            <h4 class="title"><a href="#">Cameras record evidence of joint hunt</a></h4>
+            <p class="excerpt">First recorded evidence of two species working together.</p>
+            <div class="meta">12 hrs ago • Science</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
