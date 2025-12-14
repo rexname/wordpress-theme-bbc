@@ -114,10 +114,13 @@
   </section>
 
   <?php
-  $also_cat_id = 0;
+  $also_cat_id = (int) get_theme_mod('bbc_also_category', 0);
   $also_cat_name = '';
-  $maybe_news = get_category_by_slug('news');
-  if ($maybe_news) { $also_cat_id = (int) $maybe_news->term_id; $also_cat_name = $maybe_news->name; }
+  $also_multi_csv = (string) get_theme_mod('bbc_also_categories', '');
+  $also_multi_ids = array_filter(array_map('absint', preg_split('/\s*,\s*/', $also_multi_csv, -1, PREG_SPLIT_NO_EMPTY)));
+  if (!$also_cat_id && !empty($also_multi_ids)) { $also_cat_id = $also_multi_ids[0]; }
+  if ($also_cat_id) { $maybe = get_category($also_cat_id); if ($maybe) $also_cat_name = $maybe->name; }
+  if (!$also_cat_id) { $maybe_news = get_category_by_slug('news'); if ($maybe_news) { $also_cat_id = (int) $maybe_news->term_id; $also_cat_name = $maybe_news->name; } }
   if (!$also_cat_id) {
     $tops = get_categories(['parent'=>0,'hide_empty'=>false,'orderby'=>'count','order'=>'DESC']);
     if (!empty($tops)) { $also_cat_id = (int) $tops[0]->term_id; $also_cat_name = $tops[0]->name; }
@@ -135,20 +138,26 @@
   ]);
   $also_media = new WP_Query([
     'cat' => $also_cat_id,
-    'posts_per_page' => 3,
+    'posts_per_page' => 2,
     'offset' => 1,
     'ignore_sticky_posts' => true,
   ]);
-  $also_right = new WP_Query([
+  $also_center_list = new WP_Query([
     'cat' => $also_cat_id,
     'posts_per_page' => 3,
     'offset' => 4,
     'ignore_sticky_posts' => true,
   ]);
+  $also_right = new WP_Query([
+    'cat' => $also_cat_id,
+    'posts_per_page' => 3,
+    'offset' => 3,
+    'ignore_sticky_posts' => true,
+  ]);
   $also_cards = new WP_Query([
     'cat' => $also_cat_id,
     'posts_per_page' => 5,
-    'offset' => 7,
+    'offset' => 6,
     'ignore_sticky_posts' => true,
   ]);
   ?>
@@ -176,10 +185,9 @@
           <div class="also-media">
             <a href="<?php the_permalink(); ?>">
               <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-side'); } ?>
-              <span class="play"></span>
             </a>
           </div>
-        <?php endwhile; wp_reset_postdata(); endif; ?>
+        <?php endwhile; wp_reset_postdata(); endif; ?> 
       </div>
       <aside class="also-right">
         <?php if ($also_right->have_posts()) : while ($also_right->have_posts()) : $also_right->the_post(); ?>
