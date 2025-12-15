@@ -24,67 +24,27 @@ add_action('after_setup_theme', function(){
     add_image_size('card-sm', 180, 120, true);
 });
 
-// Customizer: pilih kategori untuk section ALSO
-add_action('customize_register', function($wp_customize){
-    $wp_customize->add_section('bbc_also_section', [
-        'title' => __('ALSO Section','bbc'),
-        'priority' => 130,
-    ]);
-    $wp_customize->add_setting('bbc_also_category', [
-        'default' => 0,
-        'sanitize_callback' => 'absint',
-    ]);
-    $cats = get_categories(['hide_empty'=>false]);
-    $choices = [0 => __('Auto','bbc')];
-    foreach($cats as $c){ $choices[$c->term_id] = $c->name; }
-    $wp_customize->add_control('bbc_also_category', [
-        'type' => 'select',
-        'section' => 'bbc_also_section',
-        'label' => __('Category for ALSO','bbc'),
-        'choices' => $choices,
-    ]);
+function bbc_get_home_section_category_ids(){
+    $raw = get_theme_mod('bbc_home_categories', []);
+    if (is_array($raw)) {
+        $ids = array_map('absint', $raw);
+    } else {
+        $csv = (string) $raw;
+        $ids = $csv !== '' ? array_map('absint', preg_split('/\s*,\s*/', $csv, -1, PREG_SPLIT_NO_EMPTY)) : [];
+    }
+    $ids = array_values(array_unique(array_filter($ids, function($v){ return $v > 0; })));
+    if (empty($ids)) {
+        $tops = get_categories(['parent'=>0,'hide_empty'=>false,'orderby'=>'count','order'=>'DESC']);
+        foreach ($tops as $t) { $ids[] = (int) $t->term_id; }
+        $ids = array_slice($ids, 0, 2);
+    }
+    return $ids;
+}
 
-    // Multi-category selection
-    if (!function_exists('bbc_sanitize_csv_ids')) {
-        function bbc_sanitize_csv_ids($value){
-            if (is_array($value)) { $ids = $value; }
-            else { $ids = preg_split('/\s*,\s*/', (string)$value, -1, PREG_SPLIT_NO_EMPTY); }
-            $ids = array_map('absint', $ids);
-            $ids = array_filter($ids, function($v){ return $v > 0; });
-            $ids = array_unique($ids);
-            return implode(',', $ids);
-        }
-    }
-    if (!class_exists('BBC_Customize_Checkbox_Multiple')) {
-        class BBC_Customize_Checkbox_Multiple extends WP_Customize_Control {
-            public $type = 'checkbox-multiple';
-            public function render_content(){
-                if (empty($this->choices)) return;
-                echo '<span class="customize-control-title">'.esc_html($this->label).'</span>';
-                $current = array_map('absint', preg_split('/\s*,\s*/', (string)$this->value(), -1, PREG_SPLIT_NO_EMPTY));
-                echo '<div class="bbc-multi-wrap">';
-                foreach ($this->choices as $val => $label) {
-                    $checked = in_array((int)$val, $current, true) ? ' checked' : '';
-                    echo '<label style="display:block;margin:4px 0"><input type="checkbox" class="bbc-multi" value="'.esc_attr($val).'"'.$checked.'> '.esc_html($label).'</label>';
-                }
-                echo '<input type="hidden" class="bbc-multi-store" '.$this->link().' value="'.esc_attr(implode(',', $current)).'">';
-                echo '<script>(function(s){var wrap=s.parentNode;var boxes=wrap.querySelectorAll(".bbc-multi");var store=wrap.querySelector(".bbc-multi-store");boxes.forEach(function(b){b.addEventListener("change",function(){var v=[];boxes.forEach(function(x){if(x.checked) v.push(x.value);});store.value=v.join(",");store.dispatchEvent(new Event("change"));});});})(document.currentScript);</script>';
-                echo '</div>';
-            }
-        }
-    }
-    $wp_customize->add_setting('bbc_also_categories', [
-        'default' => '',
-        'sanitize_callback' => 'bbc_sanitize_csv_ids',
-    ]);
-    $multi_choices = [];
-    foreach(get_categories(['hide_empty'=>false,'parent'=>0]) as $c){ $multi_choices[$c->term_id] = $c->name; }
-    $wp_customize->add_control(new BBC_Customize_Checkbox_Multiple($wp_customize, 'bbc_also_categories', [
-        'section' => 'bbc_also_section',
-        'label' => __('Categories for ALSO (multi)','bbc'),
-        'choices' => $multi_choices,
-    ]));
-});
+ 
+
+// Customizer section for home categories removed as per requirement
+
 
 function theme_primary_dynamic_nav(){
     $cats = get_categories([
@@ -119,7 +79,16 @@ function theme_secondary_dynamic_nav(){
     echo '<ul class="secondary-menu">';
     foreach ($cats as $c) {
         $class = '';
-        if (is_category($c->term_id) || (is_category() && cat_is_ancestor_of($c->term_id, get_query_var('cat')))) {
+        $desc = (int) get_query_var('cat');
+        $is_ancestor = false;
+        if (function_exists('cat_is_ancestor_of')) {
+            $is_ancestor = cat_is_ancestor_of($c->term_id, $desc);
+        } elseif (function_exists('term_is_ancestor_of')) {
+            $is_ancestor = term_is_ancestor_of($c->term_id, $desc, 'category');
+        } else {
+            $is_ancestor = false;
+        }
+        if (is_category($c->term_id) || (is_category() && $is_ancestor)) {
             $class = ' class="current"';
         }
         echo '<li'.$class.'><a href="'.esc_url(get_category_link($c)).'">'.esc_html($c->name).'</a></li>';

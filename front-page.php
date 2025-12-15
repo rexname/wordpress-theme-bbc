@@ -114,58 +114,22 @@
   </section>
 
   <?php
-  $also_cat_id = (int) get_theme_mod('bbc_also_category', 0);
-  $also_cat_name = '';
-  $also_multi_csv = (string) get_theme_mod('bbc_also_categories', '');
-  $also_multi_ids = array_filter(array_map('absint', preg_split('/\s*,\s*/', $also_multi_csv, -1, PREG_SPLIT_NO_EMPTY)));
-  if (!$also_cat_id && !empty($also_multi_ids)) { $also_cat_id = $also_multi_ids[0]; }
-  if ($also_cat_id) { $maybe = get_category($also_cat_id); if ($maybe) $also_cat_name = $maybe->name; }
-  if (!$also_cat_id) { $maybe_news = get_category_by_slug('news'); if ($maybe_news) { $also_cat_id = (int) $maybe_news->term_id; $also_cat_name = $maybe_news->name; } }
-  if (!$also_cat_id) {
-    $tops = get_categories(['parent'=>0,'hide_empty'=>false,'orderby'=>'count','order'=>'DESC']);
-    if (!empty($tops)) { $also_cat_id = (int) $tops[0]->term_id; $also_cat_name = $tops[0]->name; }
-  }
-  if (!$also_cat_id) {
-    $probe = new WP_Query(['posts_per_page'=>1,'ignore_sticky_posts'=>true]);
-    if ($probe->have_posts()) { $probe->the_post(); $cats = get_the_category(); if ($cats) { $also_cat_id = (int) $cats[0]->term_id; $also_cat_name = $cats[0]->name; } }
-    wp_reset_postdata();
-  }
-
-  $also_main = new WP_Query([
-    'cat' => $also_cat_id,
-    'posts_per_page' => 1,
-    'ignore_sticky_posts' => true,
-  ]);
-  $also_media = new WP_Query([
-    'cat' => $also_cat_id,
-    'posts_per_page' => 2,
-    'offset' => 1,
-    'ignore_sticky_posts' => true,
-  ]);
-  $also_center_list = new WP_Query([
-    'cat' => $also_cat_id,
-    'posts_per_page' => 3,
-    'offset' => 4,
-    'ignore_sticky_posts' => true,
-  ]);
-  $also_right = new WP_Query([
-    'cat' => $also_cat_id,
-    'posts_per_page' => 3,
-    'offset' => 3,
-    'ignore_sticky_posts' => true,
-  ]);
-  $also_cards = new WP_Query([
-    'cat' => $also_cat_id,
-    'posts_per_page' => 5,
-    'offset' => 6,
-    'ignore_sticky_posts' => true,
-  ]);
+  $sections_ids = [];
+  $tops = get_categories(['parent'=>0,'hide_empty'=>true,'orderby'=>'name','order'=>'ASC']);
+  foreach ($tops as $t) { $sections_ids[] = (int) $t->term_id; }
+  foreach ($sections_ids as $sec_id):
+    $sec_cat = get_category($sec_id);
+    $sec_name = ($sec_cat && !is_wp_error($sec_cat)) ? $sec_cat->name : 'NEWS';
+    $main = new WP_Query(['cat'=>$sec_id,'posts_per_page'=>1,'ignore_sticky_posts'=>true]);
+    $media = new WP_Query(['cat'=>$sec_id,'posts_per_page'=>2,'offset'=>1,'ignore_sticky_posts'=>true]);
+    $right = new WP_Query(['cat'=>$sec_id,'posts_per_page'=>3,'offset'=>3,'ignore_sticky_posts'=>true]);
+    $lower = new WP_Query(['cat'=>$sec_id,'posts_per_page'=>5,'offset'=>6,'ignore_sticky_posts'=>true]);
   ?>
   <section class="also">
-    <h2 class="sub-title">ALSO IN <?php echo esc_html($also_cat_name ?: 'NEWS'); ?></h2>
+    <h2 class="sub-title">ALSO IN <?php echo esc_html($sec_name); ?></h2>
     <div class="also-grid">
       <div class="also-left">
-        <?php if ($also_main->have_posts()) : $also_main->the_post(); ?>
+        <?php if ($main->have_posts()) : $main->the_post(); ?>
           <div class="also-lead">
             <div class="also-lead-media">
               <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-lg'); } ?>
@@ -181,7 +145,7 @@
         <?php wp_reset_postdata(); endif; ?>
       </div>
       <div class="also-center">
-        <?php if ($also_media->have_posts()) : while ($also_media->have_posts()) : $also_media->the_post(); ?>
+        <?php if ($media->have_posts()) : while ($media->have_posts()) : $media->the_post(); ?>
           <div class="also-media">
             <a href="<?php the_permalink(); ?>">
               <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-side'); } ?>
@@ -190,7 +154,7 @@
         <?php endwhile; wp_reset_postdata(); endif; ?> 
       </div>
       <aside class="also-right">
-        <?php if ($also_right->have_posts()) : while ($also_right->have_posts()) : $also_right->the_post(); ?>
+        <?php if ($right->have_posts()) : while ($right->have_posts()) : $right->the_post(); ?>
           <article class="also-item">
             <h4 class="also-item-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
             <p class="also-item-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 24)); ?></p>
@@ -203,7 +167,7 @@
     </div>
 
     <div class="also-lower">
-      <?php if ($also_cards->have_posts()) : while ($also_cards->have_posts()) : $also_cards->the_post(); ?>
+      <?php if ($lower->have_posts()) : while ($lower->have_posts()) : $lower->the_post(); ?>
         <article class="also-card v">
           <a class="thumb" href="<?php the_permalink(); ?>">
             <?php if (has_post_thumbnail()) { the_post_thumbnail('card-sm'); } ?>
@@ -216,7 +180,8 @@
         </article>
       <?php endwhile; wp_reset_postdata(); endif; ?>
     </div>
-    <div class="also-more"><a href="<?php echo esc_url(get_category_link($also_cat_id)); ?>">More</a></div>
+    <div class="also-more"><a href="<?php echo esc_url(get_category_link($sec_id)); ?>">More</a></div>
   </section>
+  <?php endforeach; ?>
 </main>
 <?php get_footer(); ?>
