@@ -4,18 +4,39 @@
   <?php
   $cat_id = get_queried_object_id();
   $main_q = new WP_Query([
-    'cat' => $cat_id,
+    'tax_query' => [
+      [
+        'taxonomy' => 'category',
+        'field' => 'term_id',
+        'terms' => [$cat_id],
+        'include_children' => true,
+      ],
+    ],
     'posts_per_page' => 1,
     'ignore_sticky_posts' => true,
   ]);
   $side_q = new WP_Query([
-    'cat' => $cat_id,
+    'tax_query' => [
+      [
+        'taxonomy' => 'category',
+        'field' => 'term_id',
+        'terms' => [$cat_id],
+        'include_children' => true,
+      ],
+    ],
     'posts_per_page' => 2,
     'offset' => 1,
     'ignore_sticky_posts' => true,
   ]);
   $right_q = new WP_Query([
-    'cat' => $cat_id,
+    'tax_query' => [
+      [
+        'taxonomy' => 'category',
+        'field' => 'term_id',
+        'terms' => [$cat_id],
+        'include_children' => true,
+      ],
+    ],
     'posts_per_page' => 4,
     'offset' => 3,
     'ignore_sticky_posts' => true,
@@ -89,33 +110,68 @@
 
   <?php
   $also_main = new WP_Query([
-    'cat' => $cat_id,
+    'tax_query' => [
+      [
+        'taxonomy' => 'category',
+        'field' => 'term_id',
+        'terms' => [$cat_id],
+        'include_children' => true,
+      ],
+    ],
     'posts_per_page' => 1,
     'offset' => 9,
     'ignore_sticky_posts' => true,
   ]);
   $also_media = new WP_Query([
-    'cat' => $cat_id,
-    'posts_per_page' => 2,
+    'tax_query' => [
+      [
+        'taxonomy' => 'category',
+        'field' => 'term_id',
+        'terms' => [$cat_id],
+        'include_children' => true,
+      ],
+    ],
+    'posts_per_page' => 1,
     'offset' => 10,
     'ignore_sticky_posts' => true,
   ]);
   $also_center_list = new WP_Query([
-    'cat' => $cat_id,
+    'tax_query' => [
+      [
+        'taxonomy' => 'category',
+        'field' => 'term_id',
+        'terms' => [$cat_id],
+        'include_children' => true,
+      ],
+    ],
     'posts_per_page' => 3,
     'offset' => 12,
     'ignore_sticky_posts' => true,
   ]);
   $also_right = new WP_Query([
-    'cat' => $cat_id,
+    'tax_query' => [
+      [
+        'taxonomy' => 'category',
+        'field' => 'term_id',
+        'terms' => [$cat_id],
+        'include_children' => true,
+      ],
+    ],
     'posts_per_page' => 3,
     'offset' => 15,
     'ignore_sticky_posts' => true,
   ]);
   $also_cards = new WP_Query([
-    'cat' => $cat_id,
-    'posts_per_page' => 5,
-    'offset' => 18,
+    'tax_query' => [
+      [
+        'taxonomy' => 'category',
+        'field' => 'term_id',
+        'terms' => [$cat_id],
+        'include_children' => true,
+      ],
+    ],
+    'posts_per_page' => 3,
+    'offset' => 15,
     'ignore_sticky_posts' => true,
   ]);
   ?>
@@ -124,28 +180,31 @@
     <div class="also-grid">
       <div class="also-left">
         <?php if ($also_main->have_posts()) : $also_main->the_post(); ?>
-          <div class="also-lead">
-            <div class="also-lead-media">
-              <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-lg'); } ?>
-            </div>
-            <div class="also-lead-text">
-              <h3 class="also-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-              <p class="also-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 30)); ?></p>
-              <div class="also-meta">
-                <?php $ago = human_time_diff(get_the_time('U'), current_time('timestamp')); echo esc_html($ago).' ago'; ?>
-              </div>
+          <div class="also-lead-text">
+            <h3 class="also-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+            <p class="also-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 32)); ?></p>
+            <div class="also-meta">
+              <?php $ago = human_time_diff(get_the_time('U'), current_time('timestamp')); echo esc_html($ago).' ago'; ?>
             </div>
           </div>
         <?php wp_reset_postdata(); endif; ?>
       </div>
       <div class="also-center">
-        <?php if ($also_media->have_posts()) : while ($also_media->have_posts()) : $also_media->the_post(); ?>
+        <?php if ($also_media->have_posts()) : $also_media->the_post(); ?>
           <div class="also-media">
             <a href="<?php the_permalink(); ?>">
-              <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-side'); } ?>
+              <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-lg'); } ?>
             </a>
           </div>
-        <?php endwhile; wp_reset_postdata(); endif; ?>
+        <?php wp_reset_postdata(); endif; ?>
+        <div class="also-center-list">
+          <?php if ($also_center_list->have_posts()) : while ($also_center_list->have_posts()) : $also_center_list->the_post(); ?>
+            <div class="center-item">
+              <h4 class="center-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
+              <p class="center-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 20)); ?></p>
+            </div>
+          <?php endwhile; wp_reset_postdata(); endif; ?>
+        </div>
       </div>
       <aside class="also-right">
         <?php if ($also_right->have_posts()) : while ($also_right->have_posts()) : $also_right->the_post(); ?>
