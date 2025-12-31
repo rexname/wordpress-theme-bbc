@@ -20,7 +20,8 @@
 
   <div class="site-navbar" id="site-navbar" role="navigation" aria-label="Site navigation">
     <div class="site-header__inner">
-      <nav class="primary-nav" aria-label="Primary">
+      <section class="site-mainnav">
+        <nav class="primary-nav" aria-label="Primary">
         <?php
           if (has_nav_menu('primary')) {
               wp_nav_menu([
@@ -33,22 +34,8 @@
               theme_primary_dynamic_nav([]);
           }
         ?>
-      </nav>
-
-      <nav class="secondary-nav" aria-label="Secondary">
-        <?php
-          if (has_nav_menu('secondary')) {
-              wp_nav_menu([
-                  'theme_location' => 'secondary',
-                  'container' => false,
-                  'menu_class' => 'secondary-menu',
-                  'fallback_cb' => 'theme_secondary_dynamic_nav',
-              ]);
-          } else {
-              theme_secondary_dynamic_nav();
-          }
-        ?>
-      </nav>
+        </nav>
+      </section>
     </div>
   </div>
 </header>

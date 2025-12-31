@@ -14,36 +14,23 @@
     'offset' => 1,
     'ignore_sticky_posts' => true,
   ]);
+  $right_q = new WP_Query([
+    'cat' => $cat_id,
+    'posts_per_page' => 4,
+    'offset' => 3,
+    'ignore_sticky_posts' => true,
+  ]);
   ?>
   <section class="home-hero">
-    <?php if ($main_q->have_posts()) : $main_q->the_post(); ?>
-      <div class="hero-main">
-        <h2 class="hero-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-        <p class="hero-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 28)); ?></p>
-        <div class="hero-meta">
-          <?php
-            $ago = human_time_diff(get_the_time('U'), current_time('timestamp'));
-            $cats = get_the_category();
-            $cat = $cats ? $cats[0]->name : '';
-            echo esc_html($ago).' ago';
-            if ($cat) echo ' • '.esc_html($cat);
-          ?>
-        </div>
-      </div>
-      <div class="hero-image">
-        <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-lg'); } ?>
-      </div>
-    <?php wp_reset_postdata(); endif; ?>
-
-    <aside class="hero-side">
+    <div class="hero-left">
       <?php if ($side_q->have_posts()) : while ($side_q->have_posts()) : $side_q->the_post(); ?>
-        <article class="side-item">
+        <div class="side-item">
           <a class="side-thumb" href="<?php the_permalink(); ?>">
             <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-side'); } ?>
           </a>
           <div class="side-text">
             <h3 class="side-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-            <p class="side-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 24)); ?></p>
+            <p class="side-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 26)); ?></p>
             <div class="side-meta">
               <?php
                 $ago = human_time_diff(get_the_time('U'), current_time('timestamp'));
@@ -54,29 +41,19 @@
               ?>
             </div>
           </div>
-        </article>
+        </div>
       <?php endwhile; wp_reset_postdata(); endif; ?>
-    </aside>
-  </section>
+    </div>
 
-  <?php
-  $cards_q = new WP_Query([
-    'cat' => $cat_id,
-    'posts_per_page' => 6,
-    'offset' => 3,
-    'ignore_sticky_posts' => true,
-  ]);
-  ?>
-  <?php if ($cards_q->have_posts()) : ?>
-  <section>
-    <div class="cards-grid">
-      <?php while ($cards_q->have_posts()) : $cards_q->the_post(); ?>
-        <article class="card">
-          <a class="card-thumb" href="<?php the_permalink(); ?>">
-            <?php if (has_post_thumbnail()) { the_post_thumbnail('card-sm'); } ?>
-          </a>
-          <h3 class="card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-          <div class="card-meta">
+    <div class="hero-center">
+      <?php if ($main_q->have_posts()) : $main_q->the_post(); ?>
+        <div class="hero-image">
+          <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-lg'); } ?>
+        </div>
+        <div class="hero-lead hero-center-text">
+          <h2 class="hero-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+          <p class="hero-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 32)); ?></p>
+          <div class="hero-meta">
             <?php
               $ago = human_time_diff(get_the_time('U'), current_time('timestamp'));
               $cats = get_the_category();
@@ -85,11 +62,30 @@
               if ($cat) echo ' • '.esc_html($cat);
             ?>
           </div>
-        </article>
-      <?php endwhile; wp_reset_postdata(); ?>
+        </div>
+      <?php wp_reset_postdata(); endif; ?>
+    </div>
+
+    <div class="hero-right">
+      <?php if ($right_q->have_posts()) : while ($right_q->have_posts()) : $right_q->the_post(); ?>
+        <div class="right-item">
+          <h3 class="right-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+          <p class="right-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 22)); ?></p>
+          <div class="right-meta">
+            <?php
+              $ago = human_time_diff(get_the_time('U'), current_time('timestamp'));
+              $cats = get_the_category();
+              $cat = $cats ? $cats[0]->name : '';
+              echo esc_html($ago).' ago';
+              if ($cat) echo ' • '.esc_html($cat);
+            ?>
+          </div>
+        </div>
+      <?php endwhile; wp_reset_postdata(); endif; ?>
     </div>
   </section>
-  <?php endif; ?>
+
+  
 
   <?php
   $also_main = new WP_Query([
@@ -179,50 +175,6 @@
       <?php endwhile; wp_reset_postdata(); endif; ?>
     </div>
   </section>
-  
-  <section class="category-stream">
-    <div class="stream-grid" id="stream-grid">
-      <?php
-        $stream = new WP_Query([
-          'cat' => $cat_id,
-          'posts_per_page' => 10,
-          'offset' => 23,
-          'ignore_sticky_posts' => true,
-        ]);
-        if ($stream->have_posts()) : while ($stream->have_posts()) : $stream->the_post(); ?>
-          <article class="stream-card">
-            <a class="stream-thumb" href="<?php the_permalink(); ?>">
-              <?php if (has_post_thumbnail()) { the_post_thumbnail('hero-side'); } ?>
-            </a>
-            <h3 class="stream-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-          </article>
-      <?php endwhile; wp_reset_postdata(); endif; ?>
-    </div>
-  </section>
-
-  <script>
-    (function(){
-      var catId = <?php echo (int) $cat_id; ?>;
-      var grid = document.getElementById('stream-grid');
-      var nextOffset = 33; // 23 + 10 loaded above
-      var loading = false; var done = false;
-      function nearBottom(){ return (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 300); }
-      function imgFromEmbedded(p){ try{ var m=p._embedded['wp:featuredmedia'][0]; var s=m.media_details.sizes; return (s.hero_side||s.medium||s.large||s.full||{}).source_url || m.source_url; }catch(e){ return ''; } }
-      function cardHTML(p){ var u = imgFromEmbedded(p); return '<article class="stream-card">'+
-        '<a class="stream-thumb" href="'+p.link+'">'+(u?'<img src="'+u+'" alt="">':'')+'</a>'+
-        '<h3 class="stream-title"><a href="'+p.link+'">'+p.title.rendered+'</a></h3>'+
-      '</article>'; }
-      async function loadMore(){ if(loading||done) return; loading=true; try{
-        var url = (window.location.origin + '/wp-json/wp/v2/posts?categories='+catId+'&per_page=12&offset='+nextOffset+'&_embed=1');
-        var res = await fetch(url); var posts = await res.json();
-        if(!Array.isArray(posts) || posts.length===0){ done=true; return; }
-        var frag = document.createDocumentFragment();
-        posts.forEach(function(p){ var div=document.createElement('div'); div.innerHTML = cardHTML(p); frag.appendChild(div.firstChild); });
-        grid.appendChild(frag); nextOffset += posts.length;
-      } finally { loading=false; } }
-      function onScroll(){ if(nearBottom()) loadMore(); }
-      window.addEventListener('scroll', onScroll);
-    })();
-  </script>
+ 
 </main>
 <?php get_footer(); ?>
