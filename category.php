@@ -37,7 +37,7 @@
           <?php wp_reset_postdata(); ?>
         <?php endif; ?>
       </div>
-      <div class="div1">
+      <div class="div1">  
         <?php if ($center_list->have_posts()) : ?>
           <?php while ($center_list->have_posts()) : $center_list->the_post(); ?>
             <article class="also-tile">
@@ -112,5 +112,9 @@
       <?php endif; ?>
     </div>
   </section>
+  <div class="load-more-container">
+    <button id="load-more" class="load-more-btn" data-offset="13" data-cat="<?php echo esc_attr($cat_id); ?>">Load More</button>
+    <div id="loading-indicator" class="loading-spinner" style="display: none;"></div>
+  </div>
 </main>
 <?php get_footer(); ?>
