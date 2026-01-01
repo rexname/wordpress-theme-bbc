@@ -2,21 +2,44 @@
 ?>
 <footer class="site-footer" role="contentinfo">
   <div class="site-footer__inner">
-    <div class="footer-brand">
+    <div class="footer-top">
       <a class="site-brand" href="<?php echo esc_url(home_url('/')); ?>">
         <?php if (function_exists('the_custom_logo') && has_custom_logo()) { the_custom_logo(); } else { ?>
           <span class="brand-box"><?php bloginfo('name'); ?></span>
         <?php } ?>
       </a>
-      <p class="footer-copy">&copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>.</p>
     </div>
-    <div class="footer-cats">
-      <h4>Categories</h4>
-      <ul>
-        <?php foreach (get_categories(['parent'=>0,'hide_empty'=>false,'orderby'=>'name','order'=>'ASC']) as $c): ?>
-          <li><a href="<?php echo esc_url(get_category_link($c)); ?>"><?php echo esc_html($c->name); ?></a></li>
-        <?php endforeach; ?>
+    <div class="footer-nav">
+      <?php theme_primary_dynamic_nav(); ?>
+    </div>
+    <div class="footer-row">
+      <div class="footer-item">
+        <h4 class="footer-heading">Follow <?php bloginfo('name'); ?> on:</h4>
+        <ul class="footer-social">
+          <li><a href="#">X</a></li>
+          <li><a href="#">Facebook</a></li>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">TikTok</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <ul class="footer-links">
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">Subscription Terms</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Cookies</a></li>
+        <li><a href="#">Accessibility Help</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Advertise with us</a></li>
+        <li><a href="#">Do not share or sell my info</a></li>
+        <li><a href="#">Help & FAQs</a></li>
+        <li><a href="#">Content Index</a></li>
       </ul>
+      <p class="footer-copy">Copyright &copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. All rights reserved. This site is not responsible for the content of external sites. <a href="#">Read about our approach to external linking.</a></p>
     </div>
   </div>
 </footer>

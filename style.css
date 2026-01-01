@@ -12,7 +12,7 @@ Text Domain: bbc
 :root{--accent:#bb1919;--text:#000;--muted:#666;--border:#e5e5e5;--brandbar-h:60px;--navbar-h:0px;--gutter:24px;--right-col-w:308px}
 html{box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Helvetica Neue",Helvetica,sans-serif;color:#000;background:#fff;padding-top:calc(var(--brandbar-h) + var(--navbar-h))}
+body{margin:0;font-family:'Tinos', serif;color:#000;background:#fff;padding-top:calc(var(--brandbar-h) + var(--navbar-h))}
 
 a{color:#000;text-decoration:none}
 a:visited{color:#000}
@@ -159,7 +159,7 @@ body.brandbar-shrink .site-brandbar{box-shadow:0 1px 0 var(--border)}
 .also-item-title{font-size:1rem;margin:0}
 .also-item-excerpt{color:var(--muted);margin:6px 0 0;font-size:.9rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .also-item-meta{color:var(--muted);font-size:.85rem;margin-top:4px}
-.also-lower{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:18px}
+.also-lower{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:20px}
 .also-lower > *{min-width:0}
 .also-more{text-align:right;margin-top:12px}
 .also-more a{font-weight:600}
@@ -210,7 +210,7 @@ body.brandbar-shrink .site-brandbar{box-shadow:0 1px 0 var(--border)}
   grid-column:1 / 10;   /* 9 kolom */
   grid-row:7 / 13;     /* 6 row bawah */
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
@@ -238,13 +238,21 @@ body.brandbar-shrink .site-brandbar{box-shadow:0 1px 0 var(--border)}
   .home-links .links-row{grid-template-columns:repeat(2,1fr)}
   .also-lower{grid-template-columns:1fr}
 }
-.site-footer{border-top:1px solid var(--border);margin-top:32px;background:#fff}
-.site-footer__inner{max-width:1100px;margin:0 auto;padding:24px 16px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;color:var(--muted);font-size:.9rem}
+.site-footer{border-top:1px solid var(--border);margin-top:32px;background:#fff;padding:24px 0;}
+.site-footer__inner{max-width:1100px;margin:0 auto;padding:0 16px;color:var(--muted);font-size:.9rem}
 .site-footer__inner a{color:#000}
-.footer-brand{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
-.footer-cats h4{margin:0 0 8px;color:#000;font-size:1rem}
-.footer-cats ul{list-style:none;padding:0;margin:0;columns:2}
-.footer-cats li{margin:4px 0}
+.footer-top{padding-bottom:12px;border-bottom:1px solid var(--border)}
+.footer-nav{padding:12px 0;border-bottom:1px solid var(--border)}
+.footer-nav .primary-menu{justify-content:flex-start;overflow-x:hidden;padding-right:0}
+.footer-nav .primary-menu::-webkit-scrollbar{display:none}
+.footer-nav .primary-menu-fader{display:none}
+.footer-row{padding:12px 0;border-bottom:1px solid var(--border)}
+.footer-item{display:flex;align-items:center;gap:12px}
+.footer-heading{margin:0;font-size:1rem;font-weight:700}
+.footer-social{list-style:none;padding:0;margin:0;display:flex;gap:12px}
+.footer-legal{padding-top:12px}
+.footer-links{list-style:none;padding:0;margin:0 0 12px;display:flex;flex-wrap:wrap;gap:8px 12px;font-size:.85rem}
+.footer-copy{font-size:.85rem;color:var(--muted);margin:0}
 @media (max-width:640px){.site-footer__inner{grid-template-columns:1fr}.footer-cats ul{columns:1}}
 
 .stream-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:24px}
@@ -266,3 +274,12 @@ body.brandbar-shrink .site-brandbar{box-shadow:0 1px 0 var(--border)}
 .paper-body table{width:100%;border-collapse:collapse;margin:16px 0}
 .paper-body th,.paper-body td{border:1px solid var(--border);padding:8px;text-align:left}
 .paper-body thead th{background:#f8f8f8}
+
+.home-showcase{margin:24px 0}
+.showcase-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.showcase-item{display:flex;flex-direction:column;gap:10px}
+.showcase-thumb{display:block;overflow:hidden;aspect-ratio:16/9}
+.showcase-thumb img{width:100%;height:100%;object-fit:cover}
+.showcase-text{display:flex;flex-direction:column;gap:6px}
+.showcase-title{font-size:1.1rem;font-weight:700;margin:0}
+.showcase-excerpt{font-size:.95rem;color:var(--muted);margin:0;line-height:1.5}

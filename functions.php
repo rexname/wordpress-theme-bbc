@@ -16,6 +16,7 @@ add_action('after_setup_theme', function(){
 
 add_action('wp_enqueue_scripts', function(){
     wp_enqueue_style('bbc-style', get_stylesheet_uri(), [], '0.1.0');
+    wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap', [], null);
 });
 
 add_action('after_setup_theme', function(){

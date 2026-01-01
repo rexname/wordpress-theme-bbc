@@ -96,8 +96,8 @@
       ];
       $main = new WP_Query($tax + ['posts_per_page'=>1,'ignore_sticky_posts'=>true]);
       $center_list = new WP_Query($tax + ['posts_per_page'=>2,'offset'=>1,'ignore_sticky_posts'=>true]);
-      $right = new WP_Query($tax + ['posts_per_page'=>4,'offset'=>4,'ignore_sticky_posts'=>true]);
-      $lower = new WP_Query($tax + ['posts_per_page'=>3,'offset'=>8,'ignore_sticky_posts'=>true]);
+      $right = new WP_Query($tax + ['posts_per_page'=>4,'offset'=>3,'ignore_sticky_posts'=>true]);
+      $lower = new WP_Query($tax + ['posts_per_page'=>3,'offset'=>7,'ignore_sticky_posts'=>true]);
   ?>
   <div class="section-band">
     <div class="section-band__inner">
@@ -186,6 +186,46 @@
       </div>
     </div>
   </section>
+
   <?php endforeach; ?>
+
+  <?php
+    $ex_cats = bbc_get_home_section_category_ids();
+    $showcase_cat_id = 0;
+    $cats = get_categories(['parent'=>0, 'exclude'=>$ex_cats, 'orderby'=>'count', 'order'=>'DESC']);
+    if ($cats) {
+      $showcase_cat = $cats[0];
+      $showcase_cat_id = $showcase_cat->term_id;
+      $showcase_cat_name = $showcase_cat->name;
+      $showcase_q = new WP_Query(['cat'=>$showcase_cat_id, 'posts_per_page'=>3, 'ignore_sticky_posts'=>true]);
+    }
+  ?>
+  <?php if ($showcase_cat_id && $showcase_q->have_posts()) : ?>
+  <div class="section-band">
+    <div class="section-band__inner">
+      <a class="section-band__link" href="<?php echo esc_url(get_category_link($showcase_cat_id)); ?>">
+        <?php echo esc_html(strtoupper($showcase_cat_name)); ?>
+        <svg class="section-band__arrow" aria-hidden="true" viewBox="0 0 14 14" width="1em" height="1em">
+          <path d="M3 0 L12 7 L3 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+  <section class="home-showcase">
+    <div class="showcase-row">
+      <?php while ($showcase_q->have_posts()) : $showcase_q->the_post(); ?>
+        <article class="showcase-item">
+          <a class="showcase-thumb" href="<?php the_permalink(); ?>">
+            <?php if (has_post_thumbnail()) { the_post_thumbnail('medium_large'); } ?>
+          </a>
+          <div class="showcase-text">
+            <h4 class="showcase-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
+            <p class="showcase-excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 22)); ?></p>
+          </div>
+        </article>
+      <?php endwhile; wp_reset_postdata(); ?>
+    </div>
+  </section>
+  <?php endif; ?>
 </main>
 <?php get_footer(); ?>
