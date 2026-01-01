@@ -265,7 +265,7 @@ body.brandbar-shrink .site-brandbar{box-shadow:0 1px 0 var(--border)}
 @media (max-width:640px){.stream-grid{grid-template-columns:1fr}}
 
 .paper{max-width:1248px;margin:0 auto;background:#fff;padding:0 16px}
-.paper-head{padding:0 8px 12px}
+.paper-head{padding:0 8px 12px;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:12px}.paper-title{grid-column:1 / 3}.paper-meta{grid-column:1 / 2}.paper-actions a{display:inline-flex;align-items:center;gap:8px}.paper-by{font-weight:700}
 .paper-title{font-size:2rem;margin:0}
 .paper-meta{color:var(--muted);font-size:.9rem}
 .paper-thumb{margin:0 0 16px}

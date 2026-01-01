@@ -5,15 +5,20 @@
       <header class="paper-head">
         <h1 class="paper-title"><?php the_title(); ?></h1>
         <div class="paper-meta">
-          <?php
-            $ago = human_time_diff(get_the_time('U'), current_time('timestamp'));
-            $cats = get_the_category();
-            $cat_link = ($cats && isset($cats[0])) ? get_category_link($cats[0]) : '';
-            $cat_name = ($cats && isset($cats[0])) ? $cats[0]->name : '';
-            echo esc_html($ago).' ago';
-            if ($cat_name) echo ' • <a href="'.esc_url($cat_link).'">'.esc_html($cat_name).'</a>';
-          ?>
-        </div>
+    <span>
+        <?php
+        $ago = human_time_diff(get_the_time('U'), current_time('timestamp'));
+        echo esc_html($ago).' ago';
+        ?>
+    </span>
+    <div class="paper-by">
+        By <?php the_author(); ?>
+    </div>
+</div>
+<div class="paper-actions">
+    <a href="#"><i class="fa-solid fa-share-nodes"></i> Share</a>
+    <a href="#"><i class="fa-regular fa-bookmark"></i> Save</a>
+</div>
       </header>
 
       <?php if (has_post_thumbnail()) : ?>

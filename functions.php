@@ -17,6 +17,7 @@ add_action('after_setup_theme', function(){
 add_action('wp_enqueue_scripts', function(){
     wp_enqueue_style('bbc-style', get_stylesheet_uri(), [], '0.1.0');
     wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap', [], null);
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css', [], null);
     if (is_category()) {
         wp_enqueue_script('bbc-load-more', get_template_directory_uri() . '/js/load-more.js', ['jquery'], '0.1.0', true);
         wp_localize_script('bbc-load-more', 'bbc_ajax', [
